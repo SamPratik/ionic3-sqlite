@@ -55,16 +55,17 @@ export class HomePage {
       .then(res => {
         if(res.rows.length > 0) {
           this.totalIncome = parseInt(res.rows.item(0).totalIncome);
+          this.balance = this.totalIncome - this.totalExpense;
         }
       }).catch(e => console.log(e));
       db.executeSql("SELECT SUM(amount) AS totalExpense FROM expense WHERE type='Expense'", {})
       .then(res => {
         if(res.rows.length > 0) {
           this.totalExpense = parseInt(res.rows.item(0).totalExpense);
+          this.balance = this.totalIncome - this.totalExpense;
         }
       }).catch(e => console.log(e));
     }).catch(e => console.log(e));
-    this.balance = this.totalIncome - this.totalExpense;
   }
 
   addData() {
