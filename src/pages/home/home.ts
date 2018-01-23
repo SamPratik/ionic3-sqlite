@@ -20,10 +20,12 @@ export class HomePage {
 
   ionViewDidLoad() {
     this.getData();
+    this.getBalance();
   }
 
   ionViewWillEnter() {
     this.getData();
+    this.getBalance();
   }
 
   getData() {
@@ -51,6 +53,14 @@ export class HomePage {
         }
       })
       .catch(e => console.log(e));
+    }).catch(e => console.log(e));
+  }
+
+  getBalance() {
+    this.sqlite.create({
+      name: 'ionicdb.db',
+      location: 'default'
+    }).then((db: SQLiteObject) => {
       db.executeSql('SELECT SUM(amount) AS totalIncome FROM expense WHERE type="Income"', {})
       .then(res => {
         if(res.rows.length > 0) {
@@ -65,7 +75,7 @@ export class HomePage {
           this.balance = this.totalIncome - this.totalExpense;
         }
       }).catch(e => console.log(e));
-    }).catch(e => console.log(e));
+    })
   }
 
   addData() {
