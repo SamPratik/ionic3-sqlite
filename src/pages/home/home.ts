@@ -28,6 +28,8 @@ export class HomePage {
     this.getBalance();
   }
 
+
+
   getData() {
     this.sqlite.create({
       name: 'ionicdb.db',
@@ -55,6 +57,23 @@ export class HomePage {
       .catch(e => console.log(e));
     }).catch(e => console.log(e));
   }
+
+
+
+  deleteData(event, rowid) {
+    this.sqlite.create({
+      name: 'ionicdb.db',
+      location: 'default'
+    }).then((db: SQLiteObject) => {
+      db.executeSql("DELETE FROM expense WHERE rowid=?",[rowid])
+      .then(() => {
+        event.target.parentElement.parentElement.parentElement.style.display = 'none';
+        this.getBalance();
+      })
+    }).catch(e => console.log(e));
+  }
+
+
 
   getBalance() {
     this.sqlite.create({
