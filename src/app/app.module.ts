@@ -10,6 +10,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { AddDataPage } from '../pages/add-data/add-data';
 import { EditDataPage } from '../pages/edit-data/edit-data';
+import { DataProvider } from '../providers/data/data';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { EditDataPage } from '../pages/edit-data/edit-data';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     SQLite,
-    Toast
+    Toast,
+    DataProvider
   ]
 })
 export class AppModule {}
