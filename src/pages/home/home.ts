@@ -4,58 +4,35 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Toast } from '@ionic-native/toast';
 import { AddDataPage } from '../add-data/add-data';
 import { EditDataPage } from '../edit-data/edit-data';
+import { DataProvider } from '../../providers/data/data';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  expenses: any = [];
+  expenses = [];
   totalIncome = 0;
   totalExpense = 0;
   balance = 0;
-  constructor(public navCtrl: NavController, private sqlite: SQLite) {
+  constructor(public navCtrl: NavController, private sqlite: SQLite, private dataService: DataProvider) {
 
   }
 
   ionViewDidLoad() {
-    this.getData();
+    this.dataService.getData()
+    .then(result => {
+      this.expenses = result;
+    });
     this.getBalance();
   }
 
   ionViewWillEnter() {
-    this.getData();
+    this.dataService.getData()
+    .then(result => {
+      this.expenses = result;
+    });
     this.getBalance();
-  }
-
-
-
-  getData() {
-    this.sqlite.create({
-      name: 'ionicdb.db',
-      location: 'default'
-    }).then((db: SQLiteObject) => {
-      db.executeSql(
-        'CREATE TABLE IF NOT EXISTS expense(rowid INTEGER PRIMARY KEY, date TEXT, type TEXT, description TEXT, amount INT)',
-        {}
-      )
-      .then(res => console.log('Executed SQL'))
-      .catch(e => console.log(e));
-      db.executeSql('SELECT * FROM expense ORDER BY rowid DESC', {})
-      .then(res => {
-        this.expenses = [];
-        for(var i=0; i<res.rows.length; i++) {
-          this.expenses.push({
-            rowid: res.rows.item(i).rowid,
-            date: res.rows.item(i).date,
-            type: res.rows.item(i).type,
-            description: res.rows.item(i).description,
-            amount: res.rows.item(i).amount
-          })
-        }
-      })
-      .catch(e => console.log(e));
-    }).catch(e => console.log(e));
   }
 
 
