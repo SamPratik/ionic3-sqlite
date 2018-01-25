@@ -41,23 +41,12 @@ export class HomePage {
 
 
   deleteData(event, rowid) {
-    this.sqlite.create({
-      name: 'ionicdb.db',
-      location: 'default'
-    }).then((db: SQLiteObject) => {
-      db.executeSql("DELETE FROM expense WHERE rowid=?",[rowid])
-      .then(() => {
-        event.target.parentElement.parentElement.parentElement.style.display = 'none';
-        this.dataService.getBalance().then(result => {
-          this.balance = result;
-        });
-      })
-    }).catch(e => console.log(e));
+    this.dataService.pDeleteData(event, rowid).then(result => {
+      this.balance = result;
+    });
   }
 
-
-
-
+  
 
   addData() {
     this.navCtrl.push(AddDataPage);

@@ -84,4 +84,23 @@ export class DataProvider {
       }).catch(e => console.log(e));
     });
   }
+
+  pDeleteData(event, rowid): Promise<number> {
+    let balance: number = 0;
+    return new Promise(resolve => {
+      this.sqlite.create({
+        name: 'ionicdb.db',
+        location: 'default'
+      }).then((db: SQLiteObject) => {
+        db.executeSql("DELETE FROM expense WHERE rowid=?",[rowid])
+        .then(() => {
+          event.target.parentElement.parentElement.parentElement.style.display = 'none';
+          this.getBalance().then(result => {
+            balance = result;
+            resolve(balance);
+          });
+        })
+      }).catch(e => console.log(e));
+    });
+  }
 }
