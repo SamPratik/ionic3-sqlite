@@ -16,12 +16,13 @@ interface IExpense {
 */
 @Injectable()
 export class DataProvider {
-  expenses = [];
+  // expenses = [];
   constructor(private sqlite: SQLite) {
     console.log('Hello DataProvider Provider');
   }
 
   getData(): Promise<Array<IExpense>> {
+    let expenses = [];
     return new Promise(resolve => {
       this.sqlite.create({
         name: 'ionicdb.db',
@@ -36,7 +37,7 @@ export class DataProvider {
         db.executeSql('SELECT * FROM expense ORDER BY rowid DESC', {})
         .then(res => {
           for(var i=0; i<res.rows.length; i++) {
-            this.expenses.push({
+            expenses.push({
               rowid: res.rows.item(i).rowid,
               date: res.rows.item(i).date,
               type: res.rows.item(i).type,
@@ -44,7 +45,7 @@ export class DataProvider {
               amount: res.rows.item(i).amount
             });
           }
-          resolve(this.expenses);
+          resolve(expenses);
         })
         .catch(e => console.log(e));
       }).catch(e => console.log(e));
