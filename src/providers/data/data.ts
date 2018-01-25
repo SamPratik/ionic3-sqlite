@@ -52,4 +52,36 @@ export class DataProvider {
     });
 
   }
+
+  getBalance(): Promise<number> {
+    let balance = 0;
+    let totalIncome = 0;
+    let totalExpense = 0;
+    return new Promise(resolve => {
+      this.sqlite.create({
+        name: 'ionicdb.db',
+        location: 'default'
+      }).then((db: SQLiteObject) => {
+        db.executeSql('SELECT SUM(amount) AS totalIncome FROM expense WHERE type="Income"', {})
+        .then(res => {
+          if(res.rows.length > 0) {
+            totalIncome = parseInt(res.rows.item(0).totalIncome);
+            balance = totalIncome - totalExpense;
+          }
+        }).catch(e => console.log(e));
+        db.executeSql("SELECT SUM(amount) AS totalExpense FROM expense WHERE type='Expense'", {})
+        .then(res => {
+          if(res.rows.length > 0) {
+            totalExpense = parseInt(res.rows.item(0).totalExpense);
+            balance = totalIncome - totalExpense;
+            resolve(balance);
+          }
+          if(res.rows.length <= 0) {
+            resolve(balance);
+          }
+        }).catch(e => console.log(e));
+        // resolve(balance);
+      }).catch(e => console.log(e));
+    });
+  }
 }
